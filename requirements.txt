@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+pydantic
+sentence-transformers
+faiss-cpu
+numpy
+sqlalchemy
+psycopg[binary,pool]
+pyjwt
+passlib==1.7.4
+python-multipart==0.0.9
+redis==5.0.1

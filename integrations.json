@@ -1,0 +1,27 @@
+{
+    "youtube": {
+        "connected": true,
+        "username": "anisha.980sahu@gmail.com",
+        "followers": "47K"
+    },
+    "instagram": {
+        "connected": false,
+        "username": "",
+        "followers": ""
+    },
+    "tiktok": {
+        "connected": false,
+        "username": "",
+        "followers": ""
+    },
+    "twitter": {
+        "connected": false,
+        "username": "",
+        "followers": ""
+    },
+    "linkedin": {
+        "connected": false,
+        "username": "",
+        "followers": ""
+    }
+}
