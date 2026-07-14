@@ -114,6 +114,7 @@ export default function BillingPage() {
   const [checkoutStep, setCheckoutStep] = useState<'form' | 'processing' | 'success'>('form');
   const [checkoutError, setCheckoutError] = useState('');
   const [successInvoiceId, setSuccessInvoiceId] = useState('');
+  const [mounted, setMounted] = useState(false);
 
   // Fetch initial billing history on mount
   const syncBillingData = async () => {
@@ -131,6 +132,7 @@ export default function BillingPage() {
   };
 
   useEffect(() => {
+    setMounted(true);
     syncBillingData();
   }, []);
 
@@ -310,26 +312,28 @@ export default function BillingPage() {
           <div className="space-y-2">
             <div className="flex justify-between text-label-md font-semibold uppercase tracking-wider text-outline">
               <span>AI Credits Allocated</span>
-              <span>{profile.creditsUsed.toLocaleString()} / {profile.creditsTotal.toLocaleString()}</span>
+              <span>
+                {mounted ? profile.creditsUsed.toLocaleString() : '1,450'} / {mounted ? profile.creditsTotal.toLocaleString() : '5,000'}
+              </span>
             </div>
             <div className="w-full h-3 bg-surface-container rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-primary rounded-full shadow-sm"
                 initial={{ width: 0 }}
-                animate={{ width: `${creditPercentage}%` }}
+                animate={{ width: `${mounted ? creditPercentage : 29}%` }}
                 transition={{ duration: 1.2, ease: 'easeOut' }}
               />
             </div>
             <p className="text-xs text-on-surface-variant/70 font-medium">
-              Plan renewal on <strong className="text-on-surface">{profile.renewsOn || 'Next month'}</strong>. Credits refresh automatically.
+              Plan renewal on <strong className="text-on-surface">{mounted ? (profile.renewsOn || 'Next month') : 'August 14, 2026'}</strong>. Credits refresh automatically.
             </p>
           </div>
         </div>
         
         <div className="border-t md:border-t-0 md:border-l border-outline-variant/10 pt-6 md:pt-0 md:pl-8 flex flex-col items-start md:items-center justify-center gap-2 select-text">
           <p className="text-xs text-outline font-bold uppercase tracking-wider">Active Workspace Plan</p>
-          <span className="font-playfair text-2xl text-primary font-black bg-primary/5 px-4 py-2 border border-outline-variant/10 rounded-2xl shadow-inner">
-            {profile.plan}
+          <span className="font-playfair text-2xl text-primary font-black bg-primary/5 px-4 py-2 border border-outline-variant/10 rounded-2xl shadow-inner font-bold">
+            {mounted ? profile.plan : 'Creator Premium'}
           </span>
         </div>
       </section>
@@ -348,7 +352,8 @@ export default function BillingPage() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
           {AVAILABLE_PLANS.map((plan) => {
-            const isCurrent = profile.plan.toLowerCase().trim() === plan.name.toLowerCase().trim();
+            const activePlanName = mounted ? profile.plan : 'Creator Premium';
+            const isCurrent = activePlanName.toLowerCase().trim() === plan.name.toLowerCase().trim();
             
             return (
               <motion.div

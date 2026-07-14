@@ -137,6 +137,7 @@ export default function ProfilePage() {
 
   const [socials, setSocials] = useState<SocialConnection[]>([]);
   const [loadingSocials, setLoadingSocials] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   // Form states
   const [saving, setSaving] = useState(false);
@@ -194,6 +195,7 @@ export default function ProfilePage() {
   };
 
   useEffect(() => {
+    setMounted(true);
     fetchIntegrations();
   }, []);
 
@@ -355,7 +357,7 @@ export default function ProfilePage() {
             <form onSubmit={handleSaveProfile} className="space-y-6">
               <div className="flex flex-col sm:flex-row items-center gap-6 pb-4 border-b border-outline-variant/10">
                 <div className="w-16 h-16 bg-primary border-2 border-outline-variant/30 rounded-[20px] flex items-center justify-center text-2xl font-semibold text-on-primary shadow-md select-none font-playfair">
-                  {profile.avatarLetter}
+                  {mounted ? profile.avatarLetter : 'A'}
                 </div>
                 <div className="flex-1 space-y-1.5 text-center sm:text-left select-none">
                   <h3 className="text-body-lg font-semibold text-on-surface">Creator Identity</h3>
@@ -461,20 +463,20 @@ export default function ProfilePage() {
               <div className="flex justify-between items-center text-body-md">
                 <span className="text-on-surface-variant font-medium">Active Tier</span>
                 <span className="font-semibold text-primary bg-primary/10 border border-outline-variant/10 px-3 py-1 rounded-full text-label-md">
-                  {profile.plan}
+                  {mounted ? profile.plan : 'Creator Premium'}
                 </span>
               </div>
 
               <div className="space-y-2 pt-2">
                 <div className="flex justify-between text-label-md font-semibold uppercase tracking-wider text-outline">
                   <span>AI Engine Credits</span>
-                  <span>{profile.creditsUsed} / {profile.creditsTotal}</span>
+                  <span>{mounted ? profile.creditsUsed : 1450} / {mounted ? profile.creditsTotal : 5000}</span>
                 </div>
                 <div className="w-full h-3 bg-surface-container rounded-full overflow-hidden">
                   <motion.div
                     className="h-full bg-primary rounded-full shadow-sm"
                     initial={{ width: 0 }}
-                    animate={{ width: `${creditPercentage}%` }}
+                    animate={{ width: `${mounted ? creditPercentage : 29}%` }}
                     transition={{ duration: 1.2, ease: 'easeOut' }}
                   />
                 </div>
