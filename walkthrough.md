@@ -68,8 +68,17 @@ I have successfully enhanced the **Curate AI Creator Workspace** by introducing 
     *   **Dynamic Profile integration**: Connected the profile settings inputs directly to the persistent Zustand auth store (`useAuthStore`). Changes persist immediately across page reloads and sync reactively.
 
 ### 10. Dynamic User Profile Synchronization
-*   **[useAuthStore.ts](file:///c:/Users/anish/OneDrive/Desktop/Ai%20Content/frontend/store/useAuthStore.ts)**: Extended the auth store to persist user details in `localStorage`. Defaults are set to the real profile "Anisha Sahu" and "anisha.980sahu@gmail.com".
-*   **[layout.tsx](file:///c:/Users/anish/OneDrive/Desktop/Ai%20Content/frontend/app/(dashboard)/layout.tsx)**: Removed the hardcoded "Elena S." profile card and avatar in both the sidebar and top header, replacing them with dynamic initials-based gradient avatars and reactive credentials from the Zustand store. Handles hydration mismatches gracefully by rendering safe defaults during SSR.
+*   **[useAuthStore.ts](file:///c:/Users/anish/OneDrive/Desktop/Ai%20Content/frontend/store/useAuthStore.ts)**: Extended the auth store to persist user details in `localStorage`. Defaults are set to the real profile "Anisha Sahu" and "anisha.980sahu@gmail.com". Also integrated checkout, credit purchase, and sync API methods.
+*   **[layout.tsx](file:///c:/Users/anish/OneDrive/Desktop/Ai%20Content/frontend/app/(dashboard)/layout.tsx)**: Removed the hardcoded "Elena S." profile card and avatar in both the sidebar and top header, replacing them with dynamic initials-based gradient avatars and reactive credentials from the Zustand store. Added a "Billing & Plans" link in sidebar navigation, fetching billing state on mount.
+
+### 11. Subscription Plans & Payment Gateway
+*   **[billing/page.tsx](file:///c:/Users/anish/OneDrive/Desktop/Ai%20Content/frontend/app/(dashboard)/billing/page.tsx)**: Created a Billing and Pricing dashboard page. Displays:
+    *   **Current Plan summary**: Displays active tier name, remaining credit bar, and renewal schedules.
+    *   **Interactive Pricing Grid**: Staggered cards showcasing features and costs of Starter ($0), Creator Premium ($19), Pro Creator ($49), and Enterprise ($149) tiers.
+    *   **Stripe Sandbox Modal Checkout**: Includes CVV length filters, credit card numbers auto-grouping, automatic credit card brand detections (Visa, Mastercard, Amex, Discover), spinner state workflows, and receipt code overlays.
+    *   **Transaction invoice lists**: Tables fetching backend invoices dynamically, with simulated PDF downloads.
+    *   **Credit packs top-ups**: Allows purchasing quick-buy credit topups.
+*   **[billing.py](file:///c:/Users/anish/OneDrive/Desktop/Ai%20Content/app/api/billing.py)**: Added a FastAPI endpoint router managing backend plans states, updates credentials validations, credit pack purchases, and saves data to `billing.json` persistence database.
 
 ---
 
