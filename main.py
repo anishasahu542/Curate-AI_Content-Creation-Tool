@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import auth, users, orchestrator, trends, scripts, visuals, optimization, analytics, personalization, repurpose, hooks, calendar_planner, persona, viral_score
+from app.api import auth, users, orchestrator, trends, scripts, visuals, optimization, analytics, personalization, repurpose, hooks, calendar_planner, persona, viral_score, billing
 
 app = FastAPI(
     title="AegisCreator AI - Unified Core",
@@ -37,6 +37,7 @@ app.include_router(hooks.router, prefix="/api/v1/hooks", tags=["Hook Generator"]
 app.include_router(calendar_planner.router, prefix="/api/v1/calendar", tags=["Content Calendar"])
 app.include_router(persona.router, prefix="/api/v1/persona", tags=["Persona Builder"])
 app.include_router(viral_score.router, prefix="/api/v1/viral-score", tags=["Viral Score"])
+app.include_router(billing.router, prefix="/api/v1/billing", tags=["Billing"])
 
 @app.get("/")
 def root():

@@ -16,6 +16,7 @@ const navItems = [
   { href: '/persona', label: 'Persona', icon: 'psychology' },
   { href: '/viral-score', label: 'Viral Score', icon: 'trending_up' },
   { href: '/help', label: 'Help Center', icon: 'help' },
+  { href: '/billing', label: 'Billing & Plans', icon: 'payments' },
   { href: '/profile', label: 'Settings', icon: 'settings' },
 ];
 
@@ -24,10 +25,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [mounted, setMounted] = useState(false);
   const profile = useAuthStore(state => state.profile);
   const logout = useAuthStore(state => state.logout);
+  const fetchBillingState = useAuthStore(state => state.fetchBillingState);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    fetchBillingState();
+  }, [fetchBillingState]);
 
   return (
     <div className="flex min-h-screen bg-background text-on-background font-dm-sans selection:bg-primary-fixed selection:text-on-primary-fixed">

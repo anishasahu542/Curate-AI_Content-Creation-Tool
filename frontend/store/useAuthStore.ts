@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { api } from '@/lib/api';
 
 export interface UserProfile {
   name: string;
@@ -9,6 +10,7 @@ export interface UserProfile {
   plan: string;
   creditsUsed: number;
   creditsTotal: number;
+  renewsOn?: string;
 }
 
 interface AuthState {
@@ -18,6 +20,23 @@ interface AuthState {
   setAuth: (user: any, token: string) => void;
   updateProfile: (profile: Partial<UserProfile>) => void;
   logout: () => void;
+  fetchBillingState: () => Promise<any>;
+  checkoutSubscription: (paymentData: {
+    cardNumber: string;
+    cardExpiry: string;
+    cardCvv: string;
+    cardHolder: string;
+    planName: string;
+    amount: string;
+  }) => Promise<any>;
+  buyCredits: (paymentData: {
+    cardNumber: string;
+    cardExpiry: string;
+    cardCvv: string;
+    cardHolder: string;
+    creditsAmount: number;
+    priceAmount: string;
+  }) => Promise<any>;
 }
 
 const DEFAULT_PROFILE: UserProfile = {
@@ -28,7 +47,8 @@ const DEFAULT_PROFILE: UserProfile = {
   niche: 'Software Engineering & Tech Life',
   plan: 'Creator Premium',
   creditsUsed: 1450,
-  creditsTotal: 5000
+  creditsTotal: 5000,
+  renewsOn: ''
 };
 
 // Safe localStorage access helper
@@ -51,7 +71,7 @@ const removeLocalStorageItem = (key: string) => {
   }
 };
 
-export const useAuthStore = create<AuthState>((set) => {
+export const useAuthStore = create<AuthState>((set, get) => {
   // Initialize states lazily inside the store creation context
   const initialUser = (() => {
     try {
@@ -108,5 +128,61 @@ export const useAuthStore = create<AuthState>((set) => {
       removeLocalStorageItem('curate_ai_token');
       set({ user: null, token: null });
     },
+    fetchBillingState: async () => {
+      try {
+        const res = await api.get('/billing/state');
+        const { profile } = res.data;
+        if (profile) {
+          set((state) => {
+            const newProfile = {
+              ...state.profile,
+              plan: profile.plan || state.profile.plan,
+              creditsUsed: typeof profile.creditsUsed === 'number' ? profile.creditsUsed : state.profile.creditsUsed,
+              creditsTotal: typeof profile.creditsTotal === 'number' ? profile.creditsTotal : state.profile.creditsTotal,
+              renewsOn: profile.renewsOn || state.profile.renewsOn
+            };
+            setLocalStorageItem('curate_ai_profile', JSON.stringify(newProfile));
+            return { profile: newProfile };
+          });
+        }
+        return res.data;
+      } catch (err) {
+        console.error('Failed to sync billing state:', err);
+        return { profile: get().profile, invoices: [] };
+      }
+    },
+    checkoutSubscription: async (paymentData) => {
+      const res = await api.post('/billing/checkout', paymentData);
+      const { data } = res.data;
+      if (data && data.profile) {
+        set((state) => {
+          const newProfile = {
+            ...state.profile,
+            plan: data.profile.plan,
+            creditsUsed: data.profile.creditsUsed,
+            creditsTotal: data.profile.creditsTotal,
+            renewsOn: data.profile.renewsOn
+          };
+          setLocalStorageItem('curate_ai_profile', JSON.stringify(newProfile));
+          return { profile: newProfile };
+        });
+      }
+      return res.data;
+    },
+    buyCredits: async (paymentData) => {
+      const res = await api.post('/billing/buy-credits', paymentData);
+      const { data } = res.data;
+      if (data && data.profile) {
+        set((state) => {
+          const newProfile = {
+            ...state.profile,
+            creditsTotal: data.profile.creditsTotal
+          };
+          setLocalStorageItem('curate_ai_profile', JSON.stringify(newProfile));
+          return { profile: newProfile };
+        });
+      }
+      return res.data;
+    }
   };
 });

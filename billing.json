@@ -1,0 +1,18 @@
+{
+  "profile": {
+    "plan": "Creator Premium",
+    "creditsUsed": 1450,
+    "creditsTotal": 5000,
+    "renewsOn": "August 14, 2026"
+  },
+  "invoices": [
+    {
+      "id": "INV-2026-001",
+      "date": "2026-07-14",
+      "amount": "$19.00",
+      "plan": "Creator Premium",
+      "status": "Paid",
+      "paymentMethod": "Visa **** 4242"
+    }
+  ]
+}
