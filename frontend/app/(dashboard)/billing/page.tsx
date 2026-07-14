@@ -252,9 +252,9 @@ export default function BillingPage() {
     }
   };
 
-  // Simulates downloading PDF invoice
+  // Opens a printable invoice layout in a new tab which triggers browser print dialog
   const handleDownloadInvoice = (invId: string) => {
-    toast.success(`Starting secure download for receipt ${invId}.pdf...`);
+    window.open(`/billing/invoice/${invId}`, '_blank');
   };
 
   // Motion variants

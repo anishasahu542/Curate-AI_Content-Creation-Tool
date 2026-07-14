@@ -165,3 +165,12 @@ async def buy_addon_credits(request: BuyCreditsRequest):
     _save_billing(data)
     
     return {"status": "success", "message": f"Successfully purchased {request.creditsAmount:,} credits!", "data": data}
+
+@router.get("/invoice/{invoice_id}")
+async def get_invoice_by_id(invoice_id: str):
+    """Retrieve invoice details by ID."""
+    data = _load_billing()
+    for inv in data.get("invoices", []):
+        if inv["id"] == invoice_id:
+            return {"profile": data["profile"], "invoice": inv}
+    raise HTTPException(status_code=404, detail="Invoice not found.")

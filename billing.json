@@ -1,18 +1,34 @@
 {
-  "profile": {
-    "plan": "Creator Premium",
-    "creditsUsed": 1450,
-    "creditsTotal": 5000,
-    "renewsOn": "August 14, 2026"
-  },
-  "invoices": [
-    {
-      "id": "INV-2026-001",
-      "date": "2026-07-14",
-      "amount": "$19.00",
-      "plan": "Creator Premium",
-      "status": "Paid",
-      "paymentMethod": "Visa **** 4242"
-    }
-  ]
+    "profile": {
+        "plan": "Pro Creator",
+        "creditsUsed": 0,
+        "creditsTotal": 15000,
+        "renewsOn": "August 13, 2026"
+    },
+    "invoices": [
+        {
+            "id": "INV-2026-326",
+            "date": "2026-07-14",
+            "amount": "$49.00",
+            "plan": "Pro Creator",
+            "status": "Paid",
+            "paymentMethod": "Visa **** 5245"
+        },
+        {
+            "id": "INV-CR-552",
+            "date": "2026-07-14",
+            "amount": "$5.99",
+            "plan": "+2,500 Add-on Credits",
+            "status": "Paid",
+            "paymentMethod": "Visa **** 4527"
+        },
+        {
+            "id": "INV-2026-001",
+            "date": "2026-07-14",
+            "amount": "$19.00",
+            "plan": "Creator Premium",
+            "status": "Paid",
+            "paymentMethod": "Visa **** 4242"
+        }
+    ]
 }
