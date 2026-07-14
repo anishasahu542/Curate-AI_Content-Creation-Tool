@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { toast } from 'sonner';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface UserProfile {
   name: string;
@@ -131,16 +132,8 @@ const modalVariants: Variants = {
 };
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState<UserProfile>({
-    name: 'Alex Rivera',
-    email: 'alex.rivera@creator.ai',
-    avatarLetter: 'A',
-    bio: 'Tech content creator making programming tutorials, tool comparisons, and software engineering career advice.',
-    niche: 'Software Engineering & Tech Life',
-    plan: 'Creator Premium',
-    creditsUsed: 1450,
-    creditsTotal: 5000
-  });
+  const profile = useAuthStore(state => state.profile);
+  const updateProfile = useAuthStore(state => state.updateProfile);
 
   const [socials, setSocials] = useState<SocialConnection[]>([]);
   const [loadingSocials, setLoadingSocials] = useState(true);
@@ -152,6 +145,14 @@ export default function ProfilePage() {
   const [editingEmail, setEditingEmail] = useState(profile.email);
   const [editingBio, setEditingBio] = useState(profile.bio);
   const [editingNiche, setEditingNiche] = useState(profile.niche);
+
+  // Synchronize form values if profile store changes (e.g. initial mount)
+  useEffect(() => {
+    setEditingName(profile.name);
+    setEditingEmail(profile.email);
+    setEditingBio(profile.bio);
+    setEditingNiche(profile.niche);
+  }, [profile]);
 
   // Simulated OAuth states
   const [activeOauthPlatform, setActiveOauthPlatform] = useState<string | null>(null);
@@ -202,14 +203,13 @@ export default function ProfilePage() {
     setSaveSuccess(false);
 
     setTimeout(() => {
-      setProfile(prev => ({
-        ...prev,
+      updateProfile({
         name: editingName,
         email: editingEmail,
         bio: editingBio,
         niche: editingNiche,
         avatarLetter: editingName.trim().charAt(0).toUpperCase() || 'U'
-      }));
+      });
       setSaving(false);
       setSaveSuccess(true);
       toast.success('Profile settings saved successfully!');

@@ -1,9 +1,11 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import PageTransition from '../PageTransition';
+import { useAuthStore } from '@/store/useAuthStore';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: 'grid_view' },
@@ -19,6 +21,13 @@ const navItems = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+  const profile = useAuthStore(state => state.profile);
+  const logout = useAuthStore(state => state.logout);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <div className="flex min-h-screen bg-background text-on-background font-dm-sans selection:bg-primary-fixed selection:text-on-primary-fixed">
@@ -66,16 +75,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         <div className="space-y-6">
           <div className="flex items-center gap-3 px-2">
-            <div className="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container overflow-hidden border border-outline-variant/30">
-              <img 
-                alt="Profile" 
-                className="w-full h-full object-cover" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzWcYI9Pi3zkgpegi6hdEMs1Dwh0JPZnLInWeGT3jbm72SqhPDNeR5KTMUlqyekFx8Oqlcj_VK36vbhfPul0jypmVaGR78ZWMull7wZEM55kdRyZf9KCFlg5yNDEHKFaL9niTb8aGWY6LSWhLjzq1jEYc3XGNypATArQuTn9ohbsJcICjGCXtSkX5FJ-ElaJkkpAYjesHS0_0AHH5K61zIojKkDHixVqOU_yaNXg61MaEdq_ccMW50"
-              />
+            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary/80 to-secondary/80 flex items-center justify-center text-on-primary font-bold text-sm shadow-inner border border-outline-variant/30 select-none font-playfair">
+              {mounted ? profile.avatarLetter : 'A'}
             </div>
             <div>
-              <p className="font-semibold text-xs text-on-surface">Elena S.</p>
-              <p className="text-[10px] text-outline uppercase tracking-widest font-bold">Pro Creator</p>
+              <p className="font-semibold text-xs text-on-surface">
+                {mounted ? profile.name : 'Anisha Sahu'}
+              </p>
+              <p className="text-[10px] text-outline uppercase tracking-widest font-bold">
+                {mounted ? profile.plan : 'Pro Creator'}
+              </p>
             </div>
           </div>
 
@@ -85,13 +94,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             transition={{ type: 'spring', stiffness: 400, damping: 20 }}
             className="w-full"
           >
-            <Link 
-              href="/login" 
-              className="w-full bg-surface-container-low hover:bg-surface-container/60 text-primary py-3 rounded-full font-label-md text-label-md border border-outline-variant/20 flex items-center justify-center gap-2 text-xs font-semibold"
+            <button
+              onClick={() => {
+                logout();
+                window.location.href = '/login';
+              }}
+              className="w-full bg-surface-container-low hover:bg-surface-container/60 text-primary py-3 rounded-full font-label-md text-label-md border border-outline-variant/20 flex items-center justify-center gap-2 text-xs font-semibold cursor-pointer"
             >
               <span className="material-symbols-outlined text-sm">logout</span>
               Sign out
-            </Link>
+            </button>
           </motion.div>
         </div>
       </aside>
@@ -108,9 +120,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
               <span className="text-[10px] text-secondary font-bold uppercase tracking-wider font-dm-sans">Engine Online</span>
             </div>
-            <div className="w-8 h-8 bg-primary-container text-white rounded-full flex justify-center items-center font-extrabold text-xs">
-              E
-             </div>
+            <div className="w-8 h-8 bg-gradient-to-tr from-primary/80 to-secondary/80 text-on-primary rounded-full flex justify-center items-center font-bold text-xs select-none shadow-sm font-playfair">
+              {mounted ? profile.avatarLetter : 'A'}
+            </div>
           </div>
         </header>
 
