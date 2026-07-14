@@ -191,6 +191,9 @@ def _analyze_readability(content: str) -> tuple[int, str]:
 
 @router.post("/analyze")
 async def analyze_virality(request: ViralScoreRequest):
+    from app.api.billing import deduct_credits
+    deduct_credits(30)
+
     content = request.content
     platform = request.platform
     

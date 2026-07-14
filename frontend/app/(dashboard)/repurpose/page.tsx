@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
+import { useAuthStore } from '@/store/useAuthStore';
 
 const PLATFORMS = ['YouTube', 'Instagram', 'TikTok', 'Twitter', 'LinkedIn'] as const;
 
@@ -41,6 +42,7 @@ function TypewriterText({ text }: { text: string }) {
 }
 
 export default function RepurposePage() {
+  const fetchBillingState = useAuthStore(state => state.fetchBillingState);
   const [content, setContent] = useState('');
   const [sourcePlatform, setSourcePlatform] = useState('YouTube');
   const [results, setResults] = useState<Record<string, string> | null>(null);
@@ -72,6 +74,7 @@ export default function RepurposePage() {
       if (keys.length > 0) {
         setActiveTab(keys[0]);
         toast.success('Content repurposed successfully!');
+        fetchBillingState();
         
         // Save to local storage for dynamic dashboard
         try {

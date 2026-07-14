@@ -174,3 +174,21 @@ async def get_invoice_by_id(invoice_id: str):
         if inv["id"] == invoice_id:
             return {"profile": data["profile"], "invoice": inv}
     raise HTTPException(status_code=404, detail="Invoice not found.")
+
+def deduct_credits(amount: int):
+    """Check remaining balance and deduct API usage credits."""
+    data = _load_billing()
+    profile = data.get("profile", {})
+    credits_used = profile.get("creditsUsed", 0)
+    credits_total = profile.get("creditsTotal", 5000)
+    
+    if credits_used + amount > credits_total:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Insufficient credits. This action costs {amount} credits, but you only have {credits_total - credits_used} credits remaining. Please upgrade your subscription plan."
+        )
+        
+    profile["creditsUsed"] = credits_used + amount
+    data["profile"] = profile
+    _save_billing(data)
+    return profile

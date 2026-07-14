@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
+import { useAuthStore } from '@/store/useAuthStore';
 
 const STEPS = [
   'Analyzing Prompt',
@@ -34,6 +35,7 @@ function TypewriterText({ text }: { text: string }) {
 }
 
 export default function GenerateContentPage() {
+  const fetchBillingState = useAuthStore(state => state.fetchBillingState);
   const [topic, setTopic] = useState('');
   const [platform, setPlatform] = useState('YouTube');
   const [loading, setLoading] = useState(false);
@@ -61,6 +63,7 @@ export default function GenerateContentPage() {
       const response = await api.post('/ai/generate', { topic, platform });
       setResult(response.data.script);
       toast.success('Script generated successfully!');
+      fetchBillingState();
 
       // Save to local storage for dynamic dashboard
       try {

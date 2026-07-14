@@ -152,6 +152,9 @@ def _generate_question_hook(topic: str, tone: dict) -> dict:
 @router.post("/generate")
 async def generate_hooks(request: HookRequest):
     """Generate 5 hook variations for a given topic and platform, scored and ranked."""
+    from app.api.billing import deduct_credits
+    deduct_credits(20)
+
     tone = _get_tone(request.platform)
 
     hooks = [

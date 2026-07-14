@@ -20,6 +20,9 @@ async def generate_content(request: GenerateRequest):
     if not req_dict.get("user_id"):
         req_dict["user_id"] = "demo_user"
 
+    from app.api.billing import deduct_credits
+    deduct_credits(50)
+
     from app.services.workflow_service import execute_workflow
     result = await execute_workflow(req_dict)
     

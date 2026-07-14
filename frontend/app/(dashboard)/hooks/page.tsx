@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { toast } from 'sonner';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface Hook {
   style: string;
@@ -51,6 +52,7 @@ const itemVariants: Variants = {
 };
 
 export default function HooksPage() {
+  const fetchBillingState = useAuthStore(state => state.fetchBillingState);
   const [topic, setTopic] = useState('');
   const [platform, setPlatform] = useState('YouTube');
   const [hooks, setHooks] = useState<Hook[]>([]);
@@ -85,6 +87,7 @@ export default function HooksPage() {
       }));
       setHooks(formattedHooks);
       toast.success(`Generated ${formattedHooks.length} scroll-stopping hooks!`);
+      fetchBillingState();
       
       // Save to local storage for dynamic dashboard
       if (formattedHooks.length > 0) {
@@ -106,8 +109,8 @@ export default function HooksPage() {
           console.error('Failed to save hooks to workspace', err);
         }
       }
-    } catch {
-      const msg = 'Hooks generation failed. Please verify that the backend API is running.';
+    } catch (err: any) {
+      const msg = err.response?.data?.detail || 'Hooks generation failed. Please verify that the backend API is running.';
       setError(msg);
       toast.error(msg);
       setHooks([]);

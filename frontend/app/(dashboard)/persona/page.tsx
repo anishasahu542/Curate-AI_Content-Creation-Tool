@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { api } from '@/lib/api';
 import { motion, Variants } from 'framer-motion';
 import { toast } from 'sonner';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface Persona {
   name: string;
@@ -46,6 +47,7 @@ const itemVariants: Variants = {
 };
 
 export default function PersonaPage() {
+  const fetchBillingState = useAuthStore(state => state.fetchBillingState);
   const [niche, setNiche] = useState('');
   const [platform, setPlatform] = useState('Instagram');
   const [persona, setPersona] = useState<Persona | null>(null);
@@ -65,6 +67,7 @@ export default function PersonaPage() {
       const personaData = res.data.persona || res.data;
       setPersona(personaData);
       toast.success(`Dossier compiled for ${personaData.name}!`);
+      fetchBillingState();
       
       // Save to local storage for dynamic dashboard
       try {
@@ -84,8 +87,8 @@ export default function PersonaPage() {
       } catch (err) {
         console.error('Failed to save persona to workspace', err);
       }
-    } catch {
-      const msg = 'Persona generation failed. Please verify that the backend API is running.';
+    } catch (err: any) {
+      const msg = err.response?.data?.detail || 'Persona generation failed. Please verify that the backend API is running.';
       setError(msg);
       toast.error(msg);
       setPersona(null);

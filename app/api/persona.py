@@ -67,6 +67,9 @@ CONTENT_PREFS = {
 
 @router.post("/generate")
 async def generate_persona(request: PersonaRequest):
+    from app.api.billing import deduct_credits
+    deduct_credits(40)
+
     niche = request.niche.strip().lower()
     platform = request.platform.strip().lower()
     

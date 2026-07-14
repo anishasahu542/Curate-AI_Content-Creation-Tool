@@ -220,6 +220,9 @@ REPURPOSE_MAP = {
 @router.post("/generate")
 async def repurpose_content(request: RepurposeRequest):
     """Take content written for one platform and repurpose it for every other platform."""
+    from app.api.billing import deduct_credits
+    deduct_credits(30)
+
     sentences = _extract_sentences(request.content)
     keywords = _extract_keywords(request.content)
     source = request.source_platform.strip()

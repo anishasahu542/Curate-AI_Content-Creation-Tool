@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { api } from '@/lib/api';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
+import { useAuthStore } from '@/store/useAuthStore';
 import CountUp from 'react-countup';
 
 interface BreakdownMetric {
@@ -33,6 +34,7 @@ function getMetricGradientClass(score: number): string {
 }
 
 export default function ViralScorePage() {
+  const fetchBillingState = useAuthStore(state => state.fetchBillingState);
   const [content, setContent] = useState('');
   const [platform, setPlatform] = useState('Instagram');
   const [result, setResult] = useState<ViralResult | null>(null);
@@ -53,6 +55,7 @@ export default function ViralScorePage() {
       const data = res.data;
       setResult(data);
       toast.success('Viral audit completed successfully!');
+      fetchBillingState();
 
       if (data.overall_score >= 90) {
         toast('🔥 Highly Viral Potential! Excellent work.');
@@ -77,9 +80,9 @@ export default function ViralScorePage() {
       } catch (err) {
         console.error('Failed to save piece to workspace', err);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Analysis failed', err);
-      const msg = 'Viral score analysis failed. Please verify that the backend API is running.';
+      const msg = err.response?.data?.detail || 'Viral score analysis failed. Please verify that the backend API is running.';
       setError(msg);
       toast.error(msg);
       setResult(null);
