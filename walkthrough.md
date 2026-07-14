@@ -78,10 +78,21 @@ I have successfully enhanced the **Curate AI Creator Workspace** by introducing 
     *   **Stripe Sandbox Modal Checkout**: Includes CVV length filters, credit card numbers auto-grouping, automatic credit card brand detections (Visa, Mastercard, Amex, Discover), spinner state workflows, and receipt code overlays.
     *   **Transaction invoice lists**: Tables fetching backend invoices dynamically, with simulated PDF downloads.
     *   **Credit packs top-ups**: Allows purchasing quick-buy credit topups.
-*   **[billing.py](file:///c:/Users/anish/OneDrive/Desktop/Ai%20Content/app/api/billing.py)**: Added a FastAPI endpoint router managing backend plans states, updates credentials validations, credit pack purchases, and saves data to `billing.json` persistence database.
+*   **[billing.py](file:///c:/Users/anish/OneDrive/Desktop/Ai%20Content/app/api/billing.py)**: Added a FastAPI endpoint router managing backend plans states, updates credentials validations, credit pack purchases, and saves data to `billing.json` persistence database. Added `deduct_credits(amount)` to enforce API balance logic.
+
+### 12. Complete AI Credit Consumption Lifecycle
+*   **Credit Costs Matrix**: Enforced structured credit charges:
+    *   **Topic Script Generator**: 50 credits
+    *   **Audience Persona Dossiers**: 40 credits
+    *   **Content Repurposer**: 30 credits
+    *   **Viral Score Predictor**: 30 credits
+    *   **Hook Generator & Scorer**: 20 credits
+*   **Backend Verification & Audits**: Inside every API generation controller (`orchestrator.py`, `repurpose.py`, `hooks.py`, `persona.py`, and `viral_score.py`), the request checks remaining balance. If user balance is insufficient, returns `400 Bad Request` with an detailed explanation toast message.
+*   **Reactive Frontend Syncing**: Every successful generation action on the frontend triggers `fetchBillingState()` to sync active credits usage, instantly updating the headers and sidebar usage widgets.
 
 ---
 
 ## 🛠️ Verification & Compilation
 *   **Production Build Status**: Stopped dev servers, cleared cache, and ran a clean production build (`npm run build`). The build compiled with **zero warnings and zero errors**.
 *   **Accessibility Compliance**: Employs motion queries that respect operating system preferences for reduced animations.
+*   **Automated Verification**: Ran backend unit tests validating successful balance deductions and expected exceptions when user runs out of credits. All checks passed with 100% success.
