@@ -65,6 +65,11 @@ I have successfully enhanced the **Curate AI Creator Workspace** by introducing 
     *   Integrated spring fills on credit limits and usage stats.
     *   Connected the simulated OAuth authorization popup to `AnimatePresence` for custom scale-in/scale-out routes.
     *   Designed checkmark scales on verification success, accompanied by dynamic toast notifications.
+    *   **Dynamic Profile integration**: Connected the profile settings inputs directly to the persistent Zustand auth store (`useAuthStore`). Changes persist immediately across page reloads and sync reactively.
+
+### 10. Dynamic User Profile Synchronization
+*   **[useAuthStore.ts](file:///c:/Users/anish/OneDrive/Desktop/Ai%20Content/frontend/store/useAuthStore.ts)**: Extended the auth store to persist user details in `localStorage`. Defaults are set to the real profile "Anisha Sahu" and "anisha.980sahu@gmail.com".
+*   **[layout.tsx](file:///c:/Users/anish/OneDrive/Desktop/Ai%20Content/frontend/app/(dashboard)/layout.tsx)**: Removed the hardcoded "Elena S." profile card and avatar in both the sidebar and top header, replacing them with dynamic initials-based gradient avatars and reactive credentials from the Zustand store. Handles hydration mismatches gracefully by rendering safe defaults during SSR.
 
 ---
 
